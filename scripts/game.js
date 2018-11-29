@@ -10,7 +10,7 @@ var game = {
 	wave: 0,
 	_wave: 0,
 	
-	creeps: [],
+	enemies: [],
 	hp: 1,
 	hpinc: 1.3,
 	lives: 10,
@@ -48,7 +48,7 @@ var game = {
 			game.hp *= game.hpinc;
 			
 			for (var i = 1; i <= 10; i++) {
-				game.creeps.push({
+				game.enemies.push({
 					x: -(i * 20) - 10,
 					y: game.map[0].y,
 					offset: Math.rand(14),
@@ -69,32 +69,36 @@ var game = {
 		///////////////////////////////////////////////////////////////////////////////
 		// map
 		///////////////////////////////////////////////////////////////////////////////
-		canvas.fillStyle = "#000";
+		canvas.fillStyle = "#FFF";
+		var background = new Image();
+		background.src = "images/organs/estomac.png";
 		canvas.fillRect(0, 0, 800, 500);
+		canvas.drawImage(background, 0, 0);
+
 		
-		var map = game.map.slice(1), start = game.map[0];
-		canvas.lineWidth = 40;
-		canvas.strokeStyle = "#00F";
-		canvas.beginPath();
-		canvas.moveTo(start.x, start.y);
-		map.forEach(function (cur, i) {
-			canvas.lineTo(cur.x, cur.y);
-		});
-		canvas.stroke();
-		canvas.lineWidth = 30;
-		canvas.strokeStyle = "#004";
-		canvas.beginPath();
-		canvas.moveTo(start.x, start.y);
-		map.forEach(function (cur, i) {
-			canvas.lineTo(cur.x, cur.y);
-		});
-		canvas.stroke();
+		// var map = game.map.slice(1), start = game.map[0];
+		// canvas.lineWidth = 40;
+		// canvas.strokeStyle = "red";
+		// canvas.beginPath();
+		// canvas.moveTo(start.x, start.y);
+		// map.forEach(function (cur, i) {
+		// 	canvas.lineTo(cur.x, cur.y);
+		// });
+		// canvas.stroke();
+		// canvas.lineWidth = 30;
+		// canvas.strokeStyle = "yellow";
+		// canvas.beginPath();
+		// canvas.moveTo(start.x, start.y);
+		// map.forEach(function (cur, i) {
+		// 	canvas.lineTo(cur.x, cur.y);
+		// });
+		// canvas.stroke();
 		
 		
 		///////////////////////////////////////////////////////////////////////////////
-		// creeps
+		// enemies
 		///////////////////////////////////////////////////////////////////////////////
-		game.creeps.forEach(function (creep, i, a) {
+		game.enemies.forEach(function (creep, i, a) {
 			var _hp = creep.hp;
 			var burning = creep.burning;
 			
@@ -145,17 +149,17 @@ var game = {
 		///////////////////////////////////////////////////////////////////////////////
 		game.turrets.forEach(function (turret) {
 			if (turret.lastshot + turret.rate <= game.ticks) {
-				var creeps = game.creeps.filter(function (creep) {
+				var enemies = game.enemies.filter(function (creep) {
 					return Math.inRadius(creep, turret, turret.range);
 				});
 				
-				if (creeps.length > 0) {
-					turret.shoot(creeps);
+				if (enemies.length > 0) {
+					turret.shoot(enemies);
 					turret.lastshot = game.ticks;
 				}
 			}
 			
-			canvas.drawImage(turret.img, turret.x - 12.5, turret.y - 12.5);
+			canvas.drawImage(turret.img, turret.x - 12.5, turret.y - 12.5, 25, 30);
 		});
 		
 		var selection = game.selection;
@@ -166,7 +170,7 @@ var game = {
 			canvas.arc(turret.x, turret.y, turret.range, 0, Math.PI * 2, true);
 			canvas.fill();
 			
-			canvas.drawImage(turret.img, turret.x - 12.5, turret.y - 12.5);
+			canvas.drawImage(turret.img, turret.x - 12.5, turret.y - 12.5, 25, 30);
 		}
 		
 		
@@ -214,17 +218,9 @@ var game = {
 		}
 		
 		$("control-score-text").textContent = text;
-		$("control-score-tweet").setAttribute("href",
-			"https://twitter.com/?status=" + window.encodeURIComponent("I scored " + text + " on " + map + " in #canvastd http://canvas-td.tkaz.ec/"));
-		
+
 		ui.panel("score");
 		$("pages-overlay").style.display = "block";
 		
-		_gaq.push(["_trackEvent", "Game", "End", map]);
-		_gaq.push(["_trackEvent", "Game", "Creeps killed", map, kills]);
-		_gaq.push(["_trackEvent", "Game", "Money spent", map, spent]);
-		_gaq.push(["_trackEvent", "Game", "Money available", map, game.cash]);
-		_gaq.push(["_trackEvent", "Game", "Turrets placed", map, game.turrets.length]);
-		_gaq.push(["_trackEvent", "Game", "Last FPS", map, Number(ui.fps.textContent)]);
 	}
 };

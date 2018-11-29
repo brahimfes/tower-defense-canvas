@@ -33,8 +33,13 @@ Defs.maps = {
 	],
 	
 	Dash: [
-		{ x: 0, y: 250 },
-		{ x: 800, y: 250 }
+		{ x: 345, y: -10 },
+		{ x: 345, y: 120 },
+		{ x: 510, y: 180 },
+		{ x: 440, y: 330 },
+		{ x: 320, y: 280 },
+		{ x: 270, y: 380 },
+		{ x: 420, y: 800 }
 	]
 };
 
@@ -63,8 +68,8 @@ Defs.turrets.Laser = {
 		{ damage: 600, rate: 24, range: 140 },
 		{ damage: 1000, rate: 22, range: 160 }
 	],
-	shoot: function (creeps) {
-		var creep = creeps[0];
+	shoot: function (enemies) {
+		var creep = enemies[0];
 		var _hp = creep.hp;
 		var turret = this;
 		
@@ -109,18 +114,18 @@ Defs.turrets.Missile = {
 		{ damage: 800, rate: 33, range: 200 }
 	],
 	cell: 0,
-	shoot: function (creeps) {
-		var creep = creeps[Math.rand(creeps.length - 1)];
+	shoot: function (enemies) {
+		var creep = enemies[Math.rand(enemies.length - 1)];
 		var cell = this.cell % 4;
 		var missile = { x: this.x + (cell % 2 === 0 ? -5 : 5), y: this.y + (cell < 2 ? -5 : 5) };
 		var turret = this;
 		
 		game.run.push({ what: function () {
 			if (creep.hp <= 0) {
-				var creeps = game.creeps.filter(function () { return true; });
+				var enemies = game.enemies.filter(function () { return true; });
 				
-				if (creeps.length) {
-					creep = creeps[Math.rand(creeps.length - 1)];
+				if (enemies.length) {
+					creep = enemies[Math.rand(enemies.length - 1)];
 				} else {
 					return false;
 				}
@@ -128,7 +133,7 @@ Defs.turrets.Missile = {
 			
 			if (Math.move(missile, creep, 3)) {
 				if (turret.levels.full) {
-					game.creeps.forEach(function (c) {
+					game.enemies.forEach(function (c) {
 						if (Math.inRadius(creep, c, 20)) {
 							var _hp = c.hp;
 							if ((c.hp -= turret.damage) <= 0 && _hp > 0) {
@@ -179,8 +184,8 @@ Defs.turrets.Tazer = {
 		{ damage: 400, rate: 26, range: 90 },
 		{ damage: 500, rate: 24, range: 100 }
 	],
-	shoot: function (creeps) {
-		var creep = creeps.sort(function (a, b) { return b.speed - a.speed; })[0];
+	shoot: function (enemies) {
+		var creep = enemies.sort(function (a, b) { return b.speed - a.speed; })[0];
 		var _hp = creep.hp;
 		var turret = this;
 		var speed = 0.9 - (turret.damage / 1000);
@@ -228,8 +233,8 @@ Defs.turrets.Mortar = {
 		{ damage: 1200, rate: 80, range: 245 },
 		{ damage: 1500, rate: 75, range: 250 }
 	],
-	shoot: function (creeps) {
-		var creep = creeps[0];
+	shoot: function (enemies) {
+		var creep = enemies[0];
 		var turret = this;
 		var target = { x: creep.x / 1, y: creep.y / 1 };
 		var shell = { x: turret.x / 1, y: turret.y / 1 };
@@ -237,7 +242,7 @@ Defs.turrets.Mortar = {
 		
 		game.run.push({ what: function () {
 			if (Math.move(shell, target, 1.5)) {
-				game.creeps.forEach(function (creep) {
+				game.enemies.forEach(function (creep) {
 					if (Math.inRadius(creep, target, radius)) {
 						var _hp = creep.hp;
 						

@@ -54,6 +54,10 @@ ul {
 	list-style: none;
 }
 
+#pages {
+
+}
+
 #pages > * {
 	background-color: #FFF;
 	display: none;
@@ -158,28 +162,6 @@ ul {
 
 #pages-scores-local-backtrack {
 	height: 70px;
-}
-
-
-/*****************************************************************************/
-/* About page
-/*****************************************************************************/
-#pages-about {
-	height: 530px;
-	padding: 10px;
-	text-align: justify;
-	width: 780px;
-}
-
-#pages-about-logo {
-	display: block;
-	margin: 45px auto 0 auto;
-}
-
-#pages-about-back {
-	bottom: 5px;
-	left: 10px;
-	position: absolute;
 }
 
 

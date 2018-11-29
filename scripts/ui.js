@@ -397,33 +397,7 @@ ui.bind("click", $("pages-start-maps").children, function (evt) {
 	
 	game.start();
 	ui.panel("turrets");
-	ui.page("canvas");
-	
-	_gaq.push(["_trackEvent", "Game", "Start", name]);
+	ui.page("canvas");	
 });
-
-ui.handletweets = function (data) {
-	var maps = {
-		loopy: $("pages-scores-twitter-loopy"),
-		backtrack: $("pages-scores-twitter-backtrack"),
-		dash: $("pages-scores-twitter-dash")
-	};
-	
-	data.results.forEach(function (tweet) {
-		var m = tweet.text.match(/I scored (\d+) \((\d+) kills, \$(\d+) spent\) on (Loopy|Backtrack|Dash) in #canvastd/i);
-		
-		if (m) {
-			var map = maps[m[4].toLowerCase()];
-			
-			if (m[1] == m[2] * m[3] && map.children.length < 31) {
-				var url = "https://twitter.com/" + tweet.from_user + "/status/" + tweet.id_str,
-					title = "@" + tweet.from_user + " on " + tweet.created_at,
-					a = '<a href="' + url + '" title="' + title + '" target="_blank">@' + tweet.from_user + '</a> ';
-				
-				map.innerHTML += '<li>' + a + m[1] + ' ☠' + m[2] + ' $' + m[3] + '</li>';
-			}
-		}
-	});
-};
 
 ui.action.scores();
